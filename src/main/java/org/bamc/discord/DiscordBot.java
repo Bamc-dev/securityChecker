@@ -8,13 +8,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.security.auth.login.LoginException;
 
 @Component
-public class DiscordBot extends ListenerAdapter implements ApplicationListener<ApplicationStartingEvent> {
+public class DiscordBot extends ListenerAdapter implements ApplicationListener<ContextStartedEvent> {
 
     @Value("${discord.bot.token}")
     private String token;
@@ -31,37 +32,6 @@ public class DiscordBot extends ListenerAdapter implements ApplicationListener<A
     private final String checkEmoji = "✅";
     private boolean isValidated = false;
     private Message projectMessage;
-
-
-    @Override
-    public void onApplicationEvent(ApplicationStartingEvent event) {
-        JDABuilder.createDefault(token)
-                .addEventListeners(this)
-                .build();
-        System.out.println("launched");
-        sendMessageIfNotExists();
-
-        String waitingMessage =
-                " __          __          _   _     _                                                                               _   \n" +
-                        " \\ \\        / /         (_) | |   (_)                                                                             | |  \n" +
-                        "  \\ \\  /\\  / /    __ _   _  | |_   _   _ __     __ _     _ __     __ _   _   _    ___   _ __ ___     ___   _ __   | |_ \n" +
-                        "   \\ \\/  \\/ /    / _` | | | | __| | | | '_ \\   / _` |   | '_ \\   / _` | | | | |  / _ \\ | '_ ` _ \\   / _ \\ | '_ \\  | __|\n" +
-                        "    \\  /\\  /    | (_| | | | | |_  | | | | | | | (_| |   | |_) | | (_| | | |_| | |  __/ | | | | | | |  __/ | | | | | |_ \n" +
-                        "     \\/  \\/      \\__,_| |_|  \\__| |_| |_| |_|  \\__, |   | .__/   \\__,_|  \\__, |  \\___| |_| |_| |_|  \\___| |_| |_|  \\__|\n" +
-                        "                                                __/ |   | |               __/ |                                        \n" +
-                        "                                               |___/    |_|              |___/                                         \n";
-
-        while (!isValidated) {
-            try {
-                System.out.println(waitingMessage);
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-
-        System.out.println("Validation received, continuing startup...");
-    }
 
     private void sendMessageIfNotExists() {
         System.out.println("Method sendMessageIfNoExists()");
@@ -91,5 +61,35 @@ public class DiscordBot extends ListenerAdapter implements ApplicationListener<A
                 event.getReaction().getEmoji().equals(checkEmoji)) {
             isValidated = true;
         }
+    }
+
+    @Override
+    public void onApplicationEvent(ContextStartedEvent event) {
+        JDABuilder.createDefault(token)
+                .addEventListeners(this)
+                .build();
+        System.out.println("launched");
+        sendMessageIfNotExists();
+
+        String waitingMessage =
+                " __          __          _   _     _                                                                               _   \n" +
+                        " \\ \\        / /         (_) | |   (_)                                                                             | |  \n" +
+                        "  \\ \\  /\\  / /    __ _   _  | |_   _   _ __     __ _     _ __     __ _   _   _    ___   _ __ ___     ___   _ __   | |_ \n" +
+                        "   \\ \\/  \\/ /    / _` | | | | __| | | | '_ \\   / _` |   | '_ \\   / _` | | | | |  / _ \\ | '_ ` _ \\   / _ \\ | '_ \\  | __|\n" +
+                        "    \\  /\\  /    | (_| | | | | |_  | | | | | | | (_| |   | |_) | | (_| | | |_| | |  __/ | | | | | | |  __/ | | | | | |_ \n" +
+                        "     \\/  \\/      \\__,_| |_|  \\__| |_| |_| |_|  \\__, |   | .__/   \\__,_|  \\__, |  \\___| |_| |_| |_|  \\___| |_| |_|  \\__|\n" +
+                        "                                                __/ |   | |               __/ |                                        \n" +
+                        "                                               |___/    |_|              |___/                                         \n";
+
+        while (!isValidated) {
+            try {
+                System.out.println(waitingMessage);
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        System.out.println("Validation received, continuing startup...");
     }
 }
