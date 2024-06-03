@@ -29,5 +29,11 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+            <id>github-repo</id>
+            <url>https://raw.githubusercontent.com/Bamc-dev/securityChecker/main/</url>
+        </repository>
+    </repositories>
 
 </project>
