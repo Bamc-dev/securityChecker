@@ -37,6 +37,7 @@ public class DiscordBot extends ListenerAdapter implements ApplicationListener<A
         JDABuilder.createDefault(token)
                 .addEventListeners(this)
                 .build();
+        System.out.println("launched");
     }
 
     @Override
@@ -66,6 +67,7 @@ public class DiscordBot extends ListenerAdapter implements ApplicationListener<A
     }
 
     private void sendMessageIfNotExists() {
+        System.out.println("Method sendMessageIfNoExists()");
         TextChannel channel = JDABuilder.createDefault(token).build().getTextChannelById(channelId);
         if (channel != null) {
             channel.getHistory().retrievePast(100).queue(messages -> {
@@ -87,6 +89,7 @@ public class DiscordBot extends ListenerAdapter implements ApplicationListener<A
 
     @Override
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
+        System.out.println("Method onMessageReactionAdd");
         if (projectMessage != null && event.getMessageId().equals(projectMessage.getId()) &&
                 event.getReaction().getEmoji().equals(checkEmoji)) {
             isValidated = true;
