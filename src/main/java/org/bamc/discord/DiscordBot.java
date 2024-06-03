@@ -32,16 +32,13 @@ public class DiscordBot extends ListenerAdapter implements ApplicationListener<A
     private boolean isValidated = false;
     private Message projectMessage;
 
-    @PostConstruct
-    public void init() throws LoginException {
+
+    @Override
+    public void onApplicationEvent(ApplicationStartingEvent event) {
         JDABuilder.createDefault(token)
                 .addEventListeners(this)
                 .build();
         System.out.println("launched");
-    }
-
-    @Override
-    public void onApplicationEvent(ApplicationStartingEvent event) {
         sendMessageIfNotExists();
 
         String waitingMessage =
