@@ -5,17 +5,18 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 @Component
-public class SecurityChecker extends ListenerAdapter implements CommandLineRunner {
+public class SecurityChecker extends ListenerAdapter implements ApplicationListener<ApplicationStartedEvent> {
     
     @Value("${security.projectName}")
     private String projectName;
@@ -29,7 +30,7 @@ public class SecurityChecker extends ListenerAdapter implements CommandLineRunne
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void onApplicationEvent(ApplicationStartedEvent event) {
         String waitingMessage =
                 " __          __          _   _     _                                                                               _   \n" +
                         " \\ \\        / /         (_) | |   (_)                                                                             | |  \n" +
@@ -56,7 +57,11 @@ public class SecurityChecker extends ListenerAdapter implements CommandLineRunne
         }
         String projectStatus = projectStatusMap.get(projectName);
         JDABuilder builder = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"));
-        builder.build().awaitReady();
+        try {
+            builder.build().awaitReady();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         TextChannel channel = builder.build().getTextChannelById(System.getenv("DISCORD_CHANNEL_ID"));
         switch (projectStatus)
         {
