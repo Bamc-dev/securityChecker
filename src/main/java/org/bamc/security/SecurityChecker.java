@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -40,7 +39,7 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
                         "     \\/  \\/      \\__,_| |_|  \\__| |_| |_| |_|  \\__, |   | .__/   \\__,_|  \\__, |  \\___| |_| |_| |_|  \\___| |_| |_|  \\__|\n" +
                         "                                                __/ |   | |               __/ |                                        \n" +
                         "                                               |___/    |_|              |___/                                         \n";
-
+        System.out.println(System.getenv("DISCORD_TOKEN"));
         if (projectName == null || projectName.isEmpty()) {
             throw new IllegalArgumentException("The required property 'projectName' is not set.");
         }
