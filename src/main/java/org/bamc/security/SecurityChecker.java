@@ -15,7 +15,7 @@ import java.util.Map;
 
 
 @Component
-public class SecurityChecker extends ListenerAdapter implements ApplicationListener<ApplicationStartedEvent> {
+public class SecurityChecker implements ApplicationListener<ApplicationStartedEvent> {
     
     @Value("${security.projectName}")
     private String projectName;
