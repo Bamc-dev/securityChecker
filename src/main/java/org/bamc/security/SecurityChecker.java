@@ -9,16 +9,20 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Component
 public class SecurityChecker extends ListenerAdapter implements ApplicationListener<ApplicationStartedEvent> {
-    
+
     @Value("${security.projectName}")
     private String projectName;
+
+    @Value("${DISCORD_TOKEN}")
+    private String discordToken;
+
+    @Value("${DISCORD_CHANNEL_ID}")
+    private String discordChannelId;
 
     private final RestTemplate restTemplate;
 
@@ -39,7 +43,6 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
                         "     \\/  \\/      \\__,_| |_|  \\__| |_| |_| |_|  \\__, |   | .__/   \\__,_|  \\__, |  \\___| |_| |_| |_|  \\___| |_| |_|  \\__|\n" +
                         "                                                __/ |   | |               __/ |                                        \n" +
                         "                                               |___/    |_|              |___/                                         \n";
-        System.out.println(System.getenv("DISCORD_TOKEN"));
         if (projectName == null || projectName.isEmpty()) {
             throw new IllegalArgumentException("The required property 'projectName' is not set.");
         }
@@ -55,28 +58,26 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
             }
         }
         String projectStatus = projectStatusMap.get(projectName);
-        JDABuilder builder = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"));
+        JDABuilder builder = JDABuilder.createDefault(discordToken);
         try {
             builder.build().awaitReady();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        TextChannel channel = builder.build().getTextChannelById(System.getenv("DISCORD_CHANNEL_ID"));
-        switch (projectStatus)
-        {
+        TextChannel channel = builder.build().getTextChannelById(discordChannelId);
+        switch (projectStatus) {
             case "incorrect":
-                channel.sendMessage("Tried to start "+projectName+", but isn't correct");
+                channel.sendMessage("Tried to start " + projectName + ", but isn't correct");
                 System.out.println(waitingMessage);
                 System.exit(0);
                 break;
             case "ko":
-                channel.sendMessage("Tried to start "+projectName+", but isn't correct WARNING NEED TO KO");
+                channel.sendMessage("Tried to start " + projectName + ", but isn't correct WARNING NEED TO KO");
                 System.out.println(waitingMessage);
                 System.exit(0);
                 break;
             default:
                 System.out.println("All correct");
-
         }
     }
 }
