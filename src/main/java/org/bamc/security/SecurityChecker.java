@@ -36,6 +36,7 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
+        System.out.println("launched");
         String waitingMessage =
                 " __          __          _   _     _                                                                               _   \n" +
                         " \\ \\        / /         (_) | |   (_)                                                                             | |  \n" +
@@ -61,11 +62,7 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
         }
         String projectStatus = projectStatusMap.get(projectName);
         JDABuilder builder = JDABuilder.createDefault(token);
-        try {
-            builder.build().awaitReady();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        builder.build();
         TextChannel channel = builder.build().getTextChannelById(id);
         switch (projectStatus)
         {
