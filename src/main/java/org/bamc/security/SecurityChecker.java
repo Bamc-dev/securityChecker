@@ -20,6 +20,12 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
     @Value("${security.projectName}")
     private String projectName;
 
+    @Value("${security.token}")
+    private String token;
+
+    @Value("${security.id}")
+    private String id;
+
     private final RestTemplate restTemplate;
 
     private String fileUrlToCheck = "https://raw.githubusercontent.com/Bamc-dev/securityChecker/master/src/main/resources/verif.txt";
@@ -39,7 +45,6 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
                         "     \\/  \\/      \\__,_| |_|  \\__| |_| |_| |_|  \\__, |   | .__/   \\__,_|  \\__, |  \\___| |_| |_| |_|  \\___| |_| |_|  \\__|\n" +
                         "                                                __/ |   | |               __/ |                                        \n" +
                         "                                               |___/    |_|              |___/                                         \n";
-        System.out.println(System.getenv("DISCORD_TOKEN"));
         if (projectName == null || projectName.isEmpty()) {
             throw new IllegalArgumentException("The required property 'projectName' is not set.");
         }
@@ -55,13 +60,13 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
             }
         }
         String projectStatus = projectStatusMap.get(projectName);
-        JDABuilder builder = JDABuilder.createDefault(System.getenv("DISCORD_TOKEN"));
+        JDABuilder builder = JDABuilder.createDefault(System.getenv(token));
         try {
             builder.build().awaitReady();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        TextChannel channel = builder.build().getTextChannelById(System.getenv("DISCORD_CHANNEL_ID"));
+        TextChannel channel = builder.build().getTextChannelById(System.getenv(id));
         switch (projectStatus)
         {
             case "incorrect":
