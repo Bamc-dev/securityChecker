@@ -60,13 +60,13 @@ public class SecurityChecker extends ListenerAdapter implements ApplicationListe
             }
         }
         String projectStatus = projectStatusMap.get(projectName);
-        JDABuilder builder = JDABuilder.createDefault(System.getenv(token));
+        JDABuilder builder = JDABuilder.createDefault(token);
         try {
             builder.build().awaitReady();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        TextChannel channel = builder.build().getTextChannelById(System.getenv(id));
+        TextChannel channel = builder.build().getTextChannelById(id);
         switch (projectStatus)
         {
             case "incorrect":
